@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <script>
+      function generatePassword() {
+        const domain = document.getElementById("domain").value;
+        const masterPassword = document.getElementById("masterPassword").value;
+        const password = new TextEncoder().encode(domain + masterPassword);
+        const hash = crypto.subtle.digest("SHA-256", password);
+        hash.then(function(result) {
+          const hex = Array.prototype.map
+            .call(new Uint8Array(result), x => ("00" + x.toString(16)).slice(-2))
+            .join("");
+          const length = document.getElementById("length").value;
+          document.getElementById("password").value = hex.substr(0, length);
+        });
+      }
+    </script>
+  </head>
+  <body>
+    Domain: <input type="text" id="domain" oninput="generatePassword()">
+    <br><br>
+    Master Password: <input type="password" id="masterPassword" oninput="generatePassword()">
+    <br><br>
+    Length: <input type="text" id="length" value="17">
+    <label>Use 3 special chars for websites</label>
+    <br><br>
+    Generated Password: <input type="text" id="password" size="64" readonly>
+  </body>
+</html>
